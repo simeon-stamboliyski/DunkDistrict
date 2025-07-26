@@ -1,0 +1,208 @@
+.form-container {
+  max-width: 500px;
+  margin-top: 40px;
+  padding: 40px 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-header h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+}
+
+.form-header p {
+  color: var(--secondary-gray);
+  font-size: 16px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-control-custom {
+  width: 100%;
+  padding: 12px 30px;
+  border: 2px solid #E9ECEF;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control-custom:focus {
+  outline: none;
+  border-color: var(--primary-orange);
+  box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+}
+
+.form-control-custom::placeholder {
+  color: #ADB5BD;
+}
+
+.form-submit-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.form-links {
+  text-align: center;
+}
+
+.form-links a {
+  color: var(--primary-orange);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.form-links a:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #E9ECEF;
+}
+
+.divider span {
+  background: white;
+  padding: 0 15px;
+  color: var(--secondary-gray);
+}
+
+/* Contact Form Specific */
+.contact-container {
+  max-width: 800px;
+}
+
+.contact-info {
+  background: var(--primary-dark);
+  color: white;
+  padding: 40px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+}
+
+.contact-info h4 {
+  color: var(--primary-orange);
+  margin-bottom: 20px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.contact-item i {
+  color: var(--primary-orange);
+  margin-right: 15px;
+  width: 20px;
+}
+
+.map-container {
+  height: 300px;
+  background: #E9ECEF;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-gray);
+  font-size: 18px;
+  margin-top: 30px;
+}
+
+/* Review Form Specific */
+.rating-selector {
+  margin-bottom: 20px;
+}
+
+.rating-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.rating-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 15px;
+  border: 2px solid #E9ECEF;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rating-option:hover,
+.rating-option.selected {
+  border-color: var(--primary-orange);
+  background-color: var(--primary-orange);
+  color: white;
+}
+
+.rating-option input {
+  display: none;
+}
+
+.stars {
+  color: var(--primary-orange);
+}
+
+textarea.form-control-custom {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Form Validation Styles */
+.form-control-custom.is-invalid {
+  border-color: var(--warning-red);
+}
+
+.form-control-custom.is-valid {
+  border-color: var(--success-green);
+}
+
+.invalid-feedback {
+  color: var(--warning-red);
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.valid-feedback {
+  color: var(--success-green);
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.btn-outline-secondary{
+    width: 400px;
+}
