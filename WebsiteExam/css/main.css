@@ -35,6 +35,7 @@ body {
   padding: 12px 24px;
   border-radius: 8px;
   transition: all 0.3s ease;
+  margin-bottom: 0px;
 }
 
 .btn-primary-custom:hover {
