@@ -17,56 +17,109 @@
         <!-- Sidebar Filters -->
         <div class="col-lg-3">
             <div class="filters-sidebar">
-                <!-- Search Bar -->
-                <div class="search-bar">
-                    <input type="text" class="form-control" placeholder="Search products...">
-                </div>
+                <form method="GET" id="filtersForm">
 
-                <!-- Category Filter -->
-                <div class="filter-section">
-                    <h5>Categories</h5>
-                    <div class="filter-option">
-                        <input type="checkbox" id="shoes">
-                        <label for="shoes">Basketball Shoes</label>
+                    <!-- Search Bar -->
+                    <div class="search-bar mb-3">
+                        <input 
+                            type="text" 
+                            name="q"
+                            class="form-control" 
+                            placeholder="Search products..."
+                            value="{{ search_query }}">
                     </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="apparel">
-                        <label for="apparel">Apparel</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="equipment">
-                        <label for="equipment">Equipment</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="accessories">
-                        <label for="accessories">Accessories</label>
-                    </div>
-                </div>
 
-                <!-- Size Filter -->
-                <div class="filter-section">
-                    <h5>Size</h5>
-                    <div class="filter-option">
-                        <input type="checkbox" id="xs">
-                        <label for="xs">XS</label>
+                    <!-- Category Filter -->
+                    <div class="filter-section mb-3">
+                        <h5>Categories</h5>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="shoes" 
+                                name="category" 
+                                value="shoes"
+                                {% if 'shoes' in selected_categories %}checked{% endif %}>
+                            <label for="shoes">Basketball Shoes</label>
+                        </div>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="apparel" 
+                                name="category" 
+                                value="apparel"
+                                {% if 'apparel' in selected_categories %}checked{% endif %}>
+                            <label for="apparel">Apparel</label>
+                        </div>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="equipment" 
+                                name="category" 
+                                value="equipment"
+                                {% if 'equipment' in selected_categories %}checked{% endif %}>
+                            <label for="equipment">Equipment</label>
+                        </div>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="accessories" 
+                                name="category" 
+                                value="accessories"
+                                {% if 'accessories' in selected_categories %}checked{% endif %}>
+                            <label for="accessories">Accessories</label>
+                        </div>
                     </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="s">
-                        <label for="s">S</label>
+
+                    <!-- Size Filter -->
+                    <div class="filter-section mb-3">
+                        <h5>Size</h5>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="xs" 
+                                name="size" 
+                                value="XS"
+                                {% if 'XS' in selected_sizes %}checked{% endif %}>
+                            <label for="xs">XS</label>
+                        </div>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="s" 
+                                name="size" 
+                                value="S"
+                                {% if 'S' in selected_sizes %}checked{% endif %}>
+                            <label for="s">S</label>
+                        </div>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="m" 
+                                name="size" 
+                                value="M"
+                                {% if 'M' in selected_sizes %}checked{% endif %}>
+                            <label for="m">M</label>
+                        </div>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="l" 
+                                name="size" 
+                                value="L"
+                                {% if 'L' in selected_sizes %}checked{% endif %}>
+                            <label for="l">L</label>
+                        </div>
+                        <div class="filter-option">
+                            <input 
+                                type="checkbox" 
+                                id="xl" 
+                                name="size" 
+                                value="XL"
+                                {% if 'XL' in selected_sizes %}checked{% endif %}>
+                            <label for="xl">XL</label>
+                        </div>
                     </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="m">
-                        <label for="m">M</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="l">
-                        <label for="l">L</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="xl">
-                        <label for="xl">XL</label>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
@@ -74,101 +127,34 @@
         <div class="col-lg-9">
             <div class="products-grid">
 
-                <!-- Product 1 -->
+                {% for product in products %}
                 <div class="product-list-card card-hover">
                     <div class="product-list-image">
-                        <img src="{% static 'images/proShoes.png' %}" alt="Pro Basketball Shoes">
+                        {% if product.picture %}
+                            <img src="{{ product.picture.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            <img src="{% static 'images/default_product.png' %}" alt="No Image">
+                        {% endif %}
                     </div>
                     <div class="product-list-info">
-                        <h5 class="product-list-name">Pro Basketball Shoes</h5>
-                        <div class="product-list-price">$129.99</div>
-                        <a href="{% url 'products:product_detail' 1 %}" class="btn btn-primary-custom">View Product</a>
+                        <h5 class="product-list-name">{{ product.name }}</h5>
+                        <div class="product-list-price">${{ product.price }}</div>
+                        <a href="{% url 'products:product_detail' product.id %}" class="btn btn-primary-custom">View Product</a>
                     </div>
                 </div>
-
-                <!-- Product 2 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proJersey.png' %}" alt="Basketball Jersey"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Performance Jersey</h5>
-                        <div class="product-list-price">$49.99</div>
-                        <a href="{% url 'products:product_detail' 2 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-
-                <!-- Product 3 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proShorts.png' %}" alt="Basketball Shorts"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Training Shorts</h5>
-                        <div class="product-list-price">$29.99</div>
-                        <a href="{% url 'products:product_detail' 3 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-
-                <!-- Product 4 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proBackpack.png' %}" alt="Basketball Backpack"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Basketball Backpack</h5>
-                        <div class="product-list-price">$79.99</div>
-                        <a href="{% url 'products:product_detail' 4 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-
-                <!-- Product 5 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proBasketball.png' %}" alt="Basketball ball"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Elite Basketball</h5>
-                        <div class="product-list-price">$39.99</div>
-                        <a href="{% url 'products:product_detail' 5 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-
-                <!-- Product 6 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proSleeve.png' %}" alt="Basketball Sleeve"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Compression Sleeves</h5>
-                        <div class="product-list-price">$24.99</div>
-                        <a href="{% url 'products:product_detail' 6 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-
-                <!-- Product 7 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proSocks.png' %}" alt="Basketball Socks"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Athletic Socks</h5>
-                        <div class="product-list-price">$14.99</div>
-                        <a href="{% url 'products:product_detail' 7 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-
-                <!-- Product 8 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proBottle.png' %}" alt="Sports Bottle"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Water Bottle</h5>
-                        <div class="product-list-price">$19.99</div>
-                        <a href="{% url 'products:product_detail' 8 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-
-                <!-- Product 9 -->
-                <div class="product-list-card card-hover">
-                    <div class="product-list-image"><img src="{% static 'images/proSweatband.png' %}" alt="Pro Sweatband set"></div>
-                    <div class="product-list-info">
-                        <h5 class="product-list-name">Sweatband Set</h5>
-                        <div class="product-list-price">$12.99</div>
-                        <a href="{% url 'products:product_detail' 9 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
+                {% empty %}
+                <p>No products found matching your filters.</p>
+                {% endfor %}
 
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('filtersForm').addEventListener('change', function() {
+        this.submit();
+    });
+</script>
 
 {% endblock %}

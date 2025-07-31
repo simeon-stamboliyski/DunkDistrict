@@ -4,6 +4,7 @@
 {% block title %}Write a Review - DunkDistrict{% endblock %}
 
 {% block content %}
+{% load widget_tweaks %}
 <!-- Page Header -->
 <div class="page-header">
     <div class="container">
@@ -21,10 +22,13 @@
                 <div class="card-body p-4">
                     <div class="row align-items-center">
                         <div class="col-md-2">
-                            <div style="width: 80px; height: 80px; background: var(--light-gray); border-radius: 8px; background-image: url('placeholder-product.jpg'); background-size: cover; background-position: center;"></div>
+                            <div class="product-image"
+                                style="width: 80px; height: 80px; background: var(--light-gray); border-radius: 8px; background-size: cover; background-position: center;
+                                        background-image: url(&quot;{% if product.picture %}{{ product.picture.url }}{% else %}{% static 'images/default_product.png' %}{% endif %}&quot;);">
+                            </div>
                         </div>
                         <div class="col-md-10">
-                            <h5 class="mb-1">Pro Basketball Shoes</h5>
+                            <h5 class="mb-1">{{ product.name }}</h5>
                             <p class="text-muted mb-0">You're reviewing this product</p>
                         </div>
                     </div>
@@ -38,98 +42,49 @@
                     <p>Help other customers by sharing your honest feedback</p>
                 </div>
 
-                <form>
-                    <!-- Rating Section -->
-                    <div class="rating-selector">
-                        <label class="form-label">Overall Rating</label>
-                        <div class="rating-options">
-                            <div class="rating-option">
-                                <input type="radio" name="rating" value="1" id="rating1">
-                                <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span>1 Star</span>
-                            </div>
-                            <div class="rating-option">
-                                <input type="radio" name="rating" value="2" id="rating2">
-                                <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span>2 Stars</span>
-                            </div>
-                            <div class="rating-option">
-                                <input type="radio" name="rating" value="3" id="rating3">
-                                <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span>3 Stars</span>
-                            </div>
-                            <div class="rating-option">
-                                <input type="radio" name="rating" value="4" id="rating4">
-                                <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span>4 Stars</span>
-                            </div>
-                            <div class="rating-option selected">
-                                <input type="radio" name="rating" value="5" id="rating5" checked>
-                                <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <span>5 Stars</span>
-                            </div>
-                        </div>
+                <form method="post">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <!-- Rating -->
+                    <div class="form-group mb-3">
+                        <label for="{{ form.rating.id_for_label }}" class="form-label">Overall Rating</label>
+                        {{ form.rating }}
+                        {{ form.rating.errors }}
                     </div>
 
                     <!-- Review Title -->
                     <div class="form-group">
-                        <label class="form-label">Review Title</label>
-                        <input type="text" class="form-control-custom" placeholder="Summarize your review in one line" required>
+                        <label class="form-label" for="{{ form.title.id_for_label }}">Review Title</label>
+                        {{ form.title|add_class:"form-control-custom" }}
+                        {{ form.title.errors }}
                     </div>
 
-                    <!-- Review Comment -->
+                    <!-- Comment -->
                     <div class="form-group">
-                        <label class="form-label">Your Review</label>
-                        <textarea class="form-control-custom" rows="6" placeholder="Share your experience with this product. What did you like or dislike? How did it perform? Would you recommend it to others?" required></textarea>
+                        <label class="form-label" for="{{ form.comment.id_for_label }}">Your Review</label>
+                        {{ form.comment|add_class:"form-control-custom" }}
+                        {{ form.comment.errors }}
                     </div>
 
-                    <!-- Additional Questions -->
+                    <!-- Ownership Duration -->
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">How long have you owned this product?</label>
-                                <select class="form-control-custom">
-                                    <option value="">Select duration</option>
-                                    <option value="less-than-week">Less than a week</option>
-                                    <option value="1-2-weeks">1-2 weeks</option>
-                                    <option value="1-month">About a month</option>
-                                    <option value="2-6-months">2-6 months</option>
-                                    <option value="6-months-plus">6+ months</option>
-                                    <option value="1-year-plus">Over a year</option>
-                                </select>
+                                <label class="form-label" for="{{ form.ownership_duration.id_for_label }}">How long have you owned this product?</label>
+                                {{ form.owned_duration|add_class:"form-control-custom" }}
+                                {{ form.owned_duration.errors }}
                             </div>
                         </div>
+
+                        <!-- Recommendation -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">Would you recommend this product?</label>
-                                <select class="form-control-custom" required>
-                                    <option value="">Select option</option>
-                                    <option value="definitely">Definitely</option>
-                                    <option value="probably">Probably</option>
-                                    <option value="maybe">Maybe</option>
-                                    <option value="probably-not">Probably not</option>
-                                    <option value="definitely-not">Definitely not</option>
-                                </select>
+                                <label class="form-label" for="{{ form.recommendation.id_for_label }}">Would you recommend this product?</label>
+                                {{ form.recommend|add_class:"form-control-custom" }}
+                                {{ form.recommend.errors }}
                             </div>
                         </div>
                     </div>
@@ -138,32 +93,35 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">What did you like most? (Optional)</label>
-                                <textarea class="form-control-custom" rows="3" placeholder="List the best features..."></textarea>
+                                <label class="form-label" for="{{ form.pros.id_for_label }}">What did you like most? (Optional)</label>
+                                {{ form.pros|add_class:"form-control-custom" }}
+                                {{ form.pros.errors }}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="form-label">What could be improved? (Optional)</label>
-                                <textarea class="form-control-custom" rows="3" placeholder="Any areas for improvement..."></textarea>
+                                <label class="form-label" for="{{ form.cons.id_for_label }}">What could be improved? (Optional)</label>
+                                {{ form.cons|add_class:"form-control-custom" }}
+                                {{ form.cons.errors }}
                             </div>
                         </div>
                     </div>
 
                     <!-- Submit Buttons -->
-                    <div class="row">
+                    <div class="row mt-4">
                         <div class="col-md-6">
                             <button type="submit" class="btn btn-primary-custom form-submit-btn">
                                 <i class="fas fa-paper-plane me-2"></i>Submit Review
                             </button>
                         </div>
                         <div class="col-md-6" id="btp">
-                            <a href="product_detail.html" class="btn btn-outline-secondary w-100" style="padding: 15px; text-align: center;">
+                            <a href="{% url 'products:product_detail' product.id %}" class="btn btn-outline-secondary w-100 py-3 text-center">
                                 <i class="fas fa-arrow-left me-2"></i>Back to Product
                             </a>
                         </div>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

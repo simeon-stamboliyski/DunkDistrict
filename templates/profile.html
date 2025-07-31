@@ -2,31 +2,28 @@
 {% load static %}
 
 {% block content %}
-<!-- Profile Section -->
 <div class="container profile-container">
-    <!-- Profile Header -->
     <div class="profile-header">
-        <div class="profile-avatar">MJ</div>
-        <h2>Welcome back, Michael Jordan!</h2>
-        <p>Member since January 2024</p>
-        
+        <div class="profile-avatar">{{ profile.first_name|default:"" |slice:":1" }}{{ profile.last_name|default:"" |slice:":1" }}</div>
+        <h2>Welcome back, {{ profile.first_name }} {{ profile.last_name }}!</h2>
+        <p>Member since {{ profile.user.created_at|date:"F Y" }}</p>
+
         <div class="profile-stats">
             <div class="stat-item">
-                <span class="stat-number">12</span>
+                <span class="stat-number">{{ orders_count }}</span>
                 <span class="stat-label">Orders</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">$1,247</span>
+                <span class="stat-number">${{ profile.total_spent }}</span>
                 <span class="stat-label">Total Spent</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">8</span>
+                <span class="stat-number">{{ profile.reviews.count }}</span>
                 <span class="stat-label">Reviews</span>
             </div>
         </div>
     </div>
 
-    <!-- Profile Content -->
     <div class="profile-content">
         <!-- Sidebar -->
         <div class="profile-sidebar">
@@ -34,113 +31,248 @@
             <div class="sidebar-section">
                 <h5>Orders</h5>
                 <ul class="sidebar-menu">
-                    <li><a href="#">Track Orders</a></li>
+                    <li><a href="#orders-history">Track Orders</a></li>
                 </ul>
             </div>
             
             <div class="sidebar-section">
                 <h5>Shopping</h5>
                 <ul class="sidebar-menu">
-                    <li><a href="cart.html">Shopping Cart</a></li>
+                    <li><a href="{% url 'accounts:cart' %}">Shopping Cart</a></li>
                 </ul>
             </div>
             
             <div class="sidebar-section">
                 <h5>Support</h5>
                 <ul class="sidebar-menu">
-                    <li><a href="#">Contact Page</a></li>
+                    <li><a href="{% url 'common:contact' %}">Contact Page</a></li>
                 </ul>
             </div>
         </div>
 
-        <!-- Main Content -->
         <div class="profile-main">
+
             <!-- Personal Information -->
-            <div class="profile-section">
-                <h4>Personal Information</h4>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Full Name</div>
-                        <div class="info-value">Michael Jordan</div>
-                    </div>
-                    <div class="info-item">
+            <form method="POST" action="{% url 'accounts:update_profile' %}">
+                {% csrf_token %}
+                <div class="profile-section">
+                    <h4>Personal Information</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                        <div class="info-label">First Name</div>
+                        <div class="info-value readonly">{{ profile.first_name }}</div>
+                        <input class="edit-input hidden" type="text" name="first_name" value="{{ profile.first_name }}">
+                        </div>
+                        <div class="info-item">
+                        <div class="info-label">Last Name</div>
+                        <div class="info-value readonly">{{ profile.last_name }}</div>
+                        <input class="edit-input hidden" type="text" name="last_name" value="{{ profile.last_name }}">
+                        </div>
+                        <div class="info-item">
                         <div class="info-label">Email</div>
-                        <div class="info-value">michael.jordan@email.com</div>
-                    </div>
-                    <div class="info-item">
+                        <div class="info-value readonly">{{ profile.user.email }}</div>
+                        <input class="edit-input hidden" type="email" name="email" value="{{ profile.user.email }}">
+                        </div>
+                        <div class="info-item">
                         <div class="info-label">Phone</div>
-                        <div class="info-value">+1 (555) 123-4567</div>
-                    </div>
-                    <div class="info-item">
+                        <div class="info-value readonly">{{ profile.phone|default:"N/A" }}</div>
+                        <input class="edit-input hidden" type="tel" name="phone" value="{{ profile.phone }}">
+                        </div>
+                        <div class="info-item">
                         <div class="info-label">Date of Birth</div>
-                        <div class="info-value">February 17, 1963</div>
+                        <div class="info-value readonly">{{ profile.date_of_birth|date:"F j, Y" }}</div>
+                        <input class="edit-input hidden" type="date" name="date_of_birth" value="{{ profile.date_of_birth|date:"Y-m-d" }}">
+                        </div>
                     </div>
+
+                    <button type="submit" class="edit-profile-btn mt-3">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </button>
                 </div>
-                <button class="edit-profile-btn mt-3">
-                    <i class="fas fa-edit me-2"></i>Edit Profile
-                </button>
-            </div>
+            </form>
 
             <!-- Shipping Address -->
-            <div class="profile-section">
-                <h4>Shipping Address</h4>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Address</div>
-                        <div class="info-value">123 Basketball Court<br>Sports City, SC 12345</div>
+            <form method="POST" action="{% url 'accounts:update_address' %}">
+                {% csrf_token %}
+                <div class="profile-section">
+                    <h4>Shipping Address</h4>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Address</div>
+                            <div class="info-value readonly">{{ profile.address|linebreaksbr }}</div>
+                            <input class="edit-input hidden" type="text" name="address" rows="3" value="{{ profile.address }}">
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Country</div>
+                            <div class="info-value readonly">{{ profile.country }}</div>
+                            <input class="edit-input hidden" type="text" name="country" value="{{ profile.country }}">
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <div class="info-label">Country</div>
-                        <div class="info-value">United States</div>
-                    </div>
+
+                    <button type="submit" class="edit-profile-btn mt-3">
+                        <i class="fas fa-edit me-2"></i>Edit Address
+                    </button>
                 </div>
-                <button class="edit-profile-btn mt-3">
-                    <i class="fas fa-edit me-2"></i>Edit Address
-                </button>
-            </div>
+            </form>
 
             <!-- Recent Orders -->
             <div class="profile-section">
                 <h4>Orders</h4>
-                <div class="orders-history">
-                    <div class="order-item">
-                        <div class="order-info">
-                            <h6>Order #DD-2024-001</h6>
-                            <div class="order-date">January 20, 2024</div>
+                <div class="orders-history" id="orders-history">
+                    {% for order in orders %}
+                        <div class="order-item">
+                            <div class="order-info">
+                                <h6>Order #{{ order.name }}</h6>
+                                <div class="order-date">{{ order.created_at|date:"F j, Y" }}</div>
+                            </div>
+                            <div>
+                                <div class="order-total" style="margin-left: 500px !important; margin-right: 20px !important;">
+                                    ${{ order.total_cost }}
+                                </div>
+                                <span class="order-status status-{{ order.status }}" style="margin-left: 490px !important; margin-right: 15px !important;">
+                                    {{ order.status|capfirst }}
+                                </span>
+                            </div>
                         </div>
-                        <div>
-                            <div class="order-total">$129.99</div>
-                            <span class="order-status status-delivered">Delivered</span>
-                        </div>
-                    </div>
-                    
-                    <div class="order-item">
-                        <div class="order-info">
-                            <h6>Order #DD-2024-002</h6>
-                            <div class="order-date">January 15, 2024</div>
-                        </div>
-                        <div>
-                            <div class="order-total">$79.98</div>
-                            <span class="order-status status-processing">Processing</span>
-                        </div>
-                    </div>
-                    
-                    <div class="order-item">
-                        <div class="order-info">
-                            <h6>Order #DD-2024-003</h6>
-                            <div class="order-date">January 10, 2024</div>
-                        </div>
-                        <div>
-                            <div class="order-total">$249.97</div>
-                            <span class="order-status status-delivered">Delivered</span>
-                        </div>
-                    </div>
+                    {% empty %}
+                        <p>No orders yet.</p>
+                    {% endfor %}
                 </div>
-                <button class="edit-profile-btn mt-3">
+
+                {% if orders_count > 3 %}
+                <button id="load-all-orders-btn" class="edit-profile-btn mt-3">
                     <i class="fas fa-history me-2"></i>View All Orders
                 </button>
+                {% endif %}
             </div>
         </div>
+
     </div>
+
 </div>
+
+<style>
+    .hidden {
+    display: none !important;
+    }
+</style>
+
+<script>
+document.getElementById('load-all-orders-btn')?.addEventListener('click', function() {
+    fetch("{% url 'accounts:load_all_orders' %}")
+    .then(response => response.json())
+    .then(data => {
+        const ordersHistory = document.getElementById('orders-history');
+        ordersHistory.innerHTML = ''; // Clear current orders
+        data.orders.forEach(order => {
+            ordersHistory.innerHTML += `
+                <div class="order-item">
+                    <div class="order-info">
+                        <h6>Order #${order.name}</h6>
+                        <div class="order-date">${order.created_at}</div>
+                    </div>
+                    <div>
+                        <div class="order-total" style="margin-left: 500px !important; margin-right: 20px !important;">
+                            $${order.total_cost}
+                        </div>
+                        <span class="order-status status-${order.status}" style="margin-left: 490px !important; margin-right: 15px !important;">
+                            ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                        </span>
+                    </div>
+                </div>
+            `;
+        });
+        this.style.display = 'none';  // Hide button after loading
+    })
+    .catch(error => {
+        console.error('Error loading orders:', error);
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    function toggleSection(section) {
+        const isEditing = section.classList.toggle('editing');
+
+        const readonlyElems = section.querySelectorAll('.info-value.readonly');
+        const inputElems = section.querySelectorAll('.edit-input');
+
+        if (isEditing) {
+            readonlyElems.forEach(el => {
+            el.classList.add('hidden');
+            console.log('Hiding readonly:', el);
+            });
+            inputElems.forEach(el => {
+            el.classList.remove('hidden');
+            console.log('Showing input:', el);
+            });
+        } else {
+            inputElems.forEach(input => {
+            const val = input.value.trim();
+
+            if (input.tagName === 'TEXTAREA') {
+                input.previousElementSibling.innerHTML = val.replace(/\n/g, '<br>') || 'N/A';
+            } else if (input.type === 'date') {
+                if (val) {
+                const dt = new Date(val);
+                input.previousElementSibling.textContent = dt.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+                } else {
+                input.previousElementSibling.textContent = 'N/A';
+                }
+            } else {
+                input.previousElementSibling.textContent = val || (input.name === 'phone' ? 'N/A' : '');
+            }
+            });
+
+            readonlyElems.forEach(el => {
+            el.classList.remove('hidden');
+            console.log('Showing readonly:', el);
+            });
+            inputElems.forEach(el => {
+            el.classList.add('hidden');
+            console.log('Hiding input:', el);
+            });
+        }
+        return isEditing;
+    }
+
+    const personalSection = document.querySelector('.profile-section:nth-of-type(1)');
+    const personalBtn = personalSection.querySelector('button.edit-profile-btn');
+
+    personalBtn.addEventListener('click', function(e) {
+        const editing = personalSection.classList.contains('editing');
+
+        if (!editing) {
+            e.preventDefault(); 
+            toggleSection(personalSection);
+            personalBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Profile';
+        } else {
+            toggleSection(personalSection);
+            personalBtn.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Profile';
+        }
+    });
+
+    const profileSections = document.querySelectorAll('.profile-section');
+    const addressSection = profileSections[1];
+    const addressBtn = addressSection.querySelector('button.edit-profile-btn');
+
+    addressBtn.addEventListener('click', function (e) {
+        const isEditing = addressSection.classList.contains('editing');
+
+        if (!isEditing) {
+            e.preventDefault();
+            toggleSection(addressSection);
+            addressBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Address';
+        } else {
+            toggleSection(addressSection);
+            addressBtn.innerHTML = '<i class="fas fa-edit me-2"></i>Edit Address';
+        }
+    });
+
+});
+</script>
+
 {% endblock %}

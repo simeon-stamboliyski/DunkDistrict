@@ -28,95 +28,39 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="product-card card-hover">
-                    <div class="product-image">
-                        <img src="{% static 'images/proShoes.png' %}" alt="Pro Basketball Shoes" class="product-img">
-                        <div class="product-badge">New</div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-name">Pro Basketball Shoes</h5>
-                        <div class="product-price">$129.99</div>
-                        <p class="product-description">Premium basketball shoes with advanced cushioning and support for serious players.</p>
-                        <a href="{% url 'products:product_detail' 1 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="product-card card-hover">
-                    <div class="product-image">
-                        <img src="{% static 'images/proJersey.png' %}" alt="Performance Jersey" class="product-img">
-                        <div class="product-badge">Popular</div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-name">Performance Jersey</h5>
-                        <div class="product-price">$49.99</div>
-                        <p class="product-description">Moisture-wicking basketball jersey designed for peak performance and comfort.</p>
-                        <a href="{% url 'products:product_detail' 2 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="product-card card-hover">
-                    <div class="product-image">
-                        <img src="{% static 'images/proShorts.png' %}" alt="Training Shorts" class="product-img">
-                        <div class="product-badge">Sale</div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-name">Training Shorts</h5>
-                        <div class="product-price">$29.99</div>
-                        <p class="product-description">Lightweight and breathable shorts perfect for training and casual wear.</p>
-                        <a href="{% url 'products:product_detail' 3 %}" class="btn btn-primary-custom">View Product</a>
+            {% for product in featured_products %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="product-card card-hover">
+                        <div class="product-image">
+                            {% if product.picture %}
+                                <img src="{{ product.picture.url }}" alt="{{ product.name }}" class="product-img">
+                            {% else %}
+                                <img src="{% static 'images/default_product.png' %}" alt="{{ product.name }}" class="product-img">
+                            {% endif %}
+                            {% comment %}
+                                Example badge logic - you can customize based on your model or conditions
+                            {% endcomment %}
+                            <div class="product-badge">
+                                {% if product.categories == 'shoes' %}
+                                    New
+                                {% elif product.categories == 'apparel' %}
+                                    Popular
+                                {% else %}
+                                    Featured
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-name">{{ product.name }}</h5>
+                            <div class="product-price">${{ product.price }}</div>
+                            <p class="product-description">{{ product.description|truncatewords:15 }}</p>
+                            <a href="{% url 'products:product_detail' product.id %}" class="btn btn-primary-custom">View Product</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="product-card card-hover">
-                    <div class="product-image">
-                        <img src="{% static 'images/proBackpack.png' %}" alt="Basketball Backpack" class="product-img">
-                        <div class="product-badge">Featured</div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-name">Basketball Backpack</h5>
-                        <div class="product-price">$79.99</div>
-                        <p class="product-description">Durable backpack with specialized compartments for basketball gear.</p>
-                        <a href="{% url 'products:product_detail' 4 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="product-card card-hover">
-                    <div class="product-image">
-                        <img src="{% static 'images/proBasketball.png' %}" alt="Elite Basketball" class="product-img">
-                        <div class="product-badge">New</div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-name">Elite Basketball</h5>
-                        <div class="product-price">$39.99</div>
-                        <p class="product-description">Official size and weight basketball with superior grip and durability.</p>
-                        <a href="{% url 'products:product_detail' 5 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="product-card card-hover">
-                    <div class="product-image">
-                        <img src="{% static 'images/proSleeve.png' %}" alt="Compression Sleeves" class="product-img">
-                        <div class="product-badge">Limited</div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-name">Compression Sleeves</h5>
-                        <div class="product-price">$24.99</div>
-                        <p class="product-description">High-performance compression sleeves for enhanced blood flow and support.</p>
-                        <a href="{% url 'products:product_detail' 6 %}" class="btn btn-primary-custom">View Product</a>
-                    </div>
-                </div>
-            </div>
+            {% empty %}
+                <p>No products found.</p>
+            {% endfor %}
         </div>
     </div>
 </section>

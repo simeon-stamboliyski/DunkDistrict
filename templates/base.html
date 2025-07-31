@@ -51,12 +51,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'common:contact' %}">Contact</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:cart' %}">
-                            <i class="fas fa-shopping-cart me-1"></i>Cart
-                        </a>
-                    </li>
+
                     {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:cart' %}">
+                                <i class="fas fa-shopping-cart me-1"></i>Cart
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'accounts:profile' %}">
                                 <i class="fas fa-user me-1"></i>Profile
@@ -115,18 +116,26 @@
                         <div class="col-lg-2 footer-section">
                             <h5>Categories</h5>
                             <ul>
-                                <li><a href="#">Shoes</a></li>
-                                <li><a href="#">Apparel</a></li>
-                                <li><a href="#">Equipment</a></li>
-                                <li><a href="#">Accessories</a></li>
+                                <li><a href="{% url 'products:product_list' %}?category=shoes">Shoes</a></li>
+                                <li><a href="{% url 'products:product_list' %}?category=apparel">Apparel</a></li>
+                                <li><a href="{% url 'products:product_list' %}?category=equipment">Equipment</a></li>
+                                <li><a href="{% url 'products:product_list' %}?category=accessories">Accessories</a></li>
                             </ul>
                         </div>
                         
                         <div class="col-lg-2 footer-section">
                             <h5>Account</h5>
                             <ul>
-                                <li><a href="{% url 'accounts:profile' %}">My Account</a></li>
-                                <li><a href="{% url 'accounts:cart' %}">Shopping Cart</a></li>
+                                <li>
+                                    <a href="{% if user.is_authenticated %}{% url 'accounts:profile' %}{% else %}{% url 'accounts:login' %}?next={% url 'accounts:profile' %}{% endif %}">
+                                        My Account
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{% if user.is_authenticated %}{% url 'accounts:cart' %}{% else %}{% url 'accounts:login' %}?next={% url 'accounts:cart' %}{% endif %}">
+                                        Shopping Cart
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
