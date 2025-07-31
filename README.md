@@ -5,6 +5,7 @@ Full-Stack Basketball Sportswear E-commerce Website
 DunkDistrict is a modern, feature-rich full-stack web application built with Django, designed specifically to serve basketball enthusiasts with premium sportswear and accessories. This platform offers an intuitive and dynamic shopping experience, combining sleek UI design with robust backend functionality.
 
 Key Features:
+
 	•	User Authentication & Profiles:
         DunkDistrict uses a custom user model (email-based authentication) with secure password handling. Registered users have personalized profiles storing details such as name, date of birth, contact info, shipping address, and accumulated total spending for loyalty tracking.
 
