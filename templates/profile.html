@@ -119,6 +119,19 @@
             <!-- Recent Orders -->
             <div class="profile-section">
                 <h4>Orders</h4>
+                <style>
+                    .order-item {
+                        display: flex !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                    }
+                    .order-right {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        gap: 10px !important;
+                        align-items: center !important;
+                    }
+                </style>
                 <div class="orders-history" id="orders-history">
                     {% for order in orders %}
                         <div class="order-item">
@@ -126,25 +139,21 @@
                                 <h6>Order #{{ order.name }}</h6>
                                 <div class="order-date">{{ order.created_at|date:"F j, Y" }}</div>
                             </div>
-                            <div>
-                                <div class="order-total" style="margin-left: 500px !important; margin-right: 20px !important;">
-                                    ${{ order.total_cost }}
-                                </div>
-                                <span class="order-status status-{{ order.status }}" style="margin-left: 490px !important; margin-right: 15px !important;">
-                                    {{ order.status|capfirst }}
-                                </span>
+                            <div class="order-right">
+                                <div class="order-total">${{ order.total_cost }}</div>
+                                <span class="order-status status-{{ order.status }}">{{ order.status|capfirst }}</span>
                             </div>
                         </div>
                     {% empty %}
                         <p>No orders yet.</p>
                     {% endfor %}
-                </div>
 
-                {% if orders_count > 3 %}
-                <button id="load-all-orders-btn" class="edit-profile-btn mt-3">
-                    <i class="fas fa-history me-2"></i>View All Orders
-                </button>
-                {% endif %}
+                    {% if orders_count > 3 %}
+                    <button id="load-all-orders-btn" class="edit-profile-btn mt-3">
+                        <i class="fas fa-history me-2"></i>View All Orders
+                    </button>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
@@ -164,7 +173,7 @@ document.getElementById('load-all-orders-btn')?.addEventListener('click', functi
     .then(response => response.json())
     .then(data => {
         const ordersHistory = document.getElementById('orders-history');
-        ordersHistory.innerHTML = ''; // Clear current orders
+        ordersHistory.innerHTML = '';
         data.orders.forEach(order => {
             ordersHistory.innerHTML += `
                 <div class="order-item">
@@ -172,18 +181,18 @@ document.getElementById('load-all-orders-btn')?.addEventListener('click', functi
                         <h6>Order #${order.name}</h6>
                         <div class="order-date">${order.created_at}</div>
                     </div>
-                    <div>
-                        <div class="order-total" style="margin-left: 500px !important; margin-right: 20px !important;">
+                    <div class="order-right">
+                        <div class="order-total">
                             $${order.total_cost}
                         </div>
-                        <span class="order-status status-${order.status}" style="margin-left: 490px !important; margin-right: 15px !important;">
+                        <span class="order-status status-${order.status}">
                             ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                         </span>
                     </div>
                 </div>
             `;
         });
-        this.style.display = 'none';  // Hide button after loading
+        this.style.display = 'none';
     })
     .catch(error => {
         console.error('Error loading orders:', error);

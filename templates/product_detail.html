@@ -28,30 +28,40 @@
                     {{ product.description|default:"No description available." }}
                 </p>
 
-                <!-- Size Selector -->
-                <div class="size-selector">
-                    <h6>Size</h6>
-                    <div class="size-options">
-                        {% if product.sizes %}
-                            {% for size in product.sizes %}
-                                <div class="size-option{% if forloop.first %} selected{% endif %}">{{ size }}</div>
-                            {% endfor %}
-                        {% else %}
-                            <div>No sizes available</div>
-                        {% endif %}
+                <form method="POST" action="{% url 'accounts:add_to_cart' %}">
+                    {% csrf_token %}
+                    
+                    <!-- Product ID hidden input -->
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+
+                    <!-- Size Selector -->
+                    <div class="size-selector">
+                        <h6>Size</h6>
+                        <div class="size-options">
+                            {% if product.sizes %}
+                                {% for size in product.sizes %}
+                                    <div class="size-option{% if forloop.first %} selected{% endif %}" data-size="{{ size }}">
+                                        {{ size }}
+                                        <input type="radio" name="size" value="{{ size }}" hidden {% if forloop.first %}checked{% endif %}>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div>No sizes available</div>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
 
-                <!-- Quantity Selector -->
-                <div class="quantity-selector">
-                    <h6>Quantity</h6>
-                    <input type="number" class="quantity-input" value="1" min="1" max="{{ product.stock|default:10 }}">
-                </div>
+                    <!-- Quantity Selector -->
+                    <div class="quantity-selector">
+                        <h6>Quantity</h6>
+                        <input type="number" name="quantity" class="quantity-input" value="1" min="1" max="{{ product.stock|default:10 }}">
+                    </div>
 
-                <!-- Add to Cart Button -->
-                <button class="btn btn-primary-custom add-to-cart-btn" data-product-id="{{ product.id }}">
-                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
-                </button>
+                    <!-- Add to Cart Button -->
+                    <button type="submit" class="btn btn-primary-custom add-to-cart-btn">
+                        <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                    </button>
+                </form>
 
                 <!-- Product Features -->
                 <div class="product-features mt-4">

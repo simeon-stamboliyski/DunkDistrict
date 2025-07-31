@@ -54,10 +54,14 @@ class Cart(models.Model):
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
     product = models.ForeignKey('products.Product', on_delete=models.CASCADE)
+    size = models.CharField(max_length=10)
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
+        return f"{self.quantity} x {self.product.name} (Size {self.size})"
+
+    class Meta:
+        unique_together = ('cart', 'product', 'size') 
     
 class Order(models.Model):
     profile = models.ForeignKey(Profile, related_name='orders', on_delete=models.CASCADE)
@@ -68,7 +72,7 @@ class Order(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('processing', 'Processing'),
-        ('completed', 'Completed'),
+        ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled'),
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')

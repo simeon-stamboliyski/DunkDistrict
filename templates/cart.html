@@ -15,58 +15,43 @@
     <div class="cart-content">
         <!-- Cart Items -->
         <div class="cart-items">
-            <h4 class="mb-4">Your Items (3)</h4>
+            <h4 class="mb-4">Your Items ({{ cart_items|length }})</h4>
 
-                <!-- Cart Item 1 -->
-                <div class="cart-item">
-                    <div class="item-image"></div>
-                    <div class="item-details">
-                        <h5>Pro Basketball Shoes</h5>
-                        <p>Premium basketball shoes with advanced cushioning</p>
-                        <p><span class="item-size">Size: 9</span></p>
-                    </div>
-                    <div class="item-price">$129.99</div>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn">-</button>
-                        <span class="quantity-display">1</span>
-                        <button class="quantity-btn">+</button>
-                    </div>
-                    <button class="remove-btn">Remove</button>
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <div class="item-image">
+                    {% if item.product.picture %}
+                        <img src="{{ item.product.picture.url }}" alt="{{ item.product.name }}" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'images/default_product.png' %}" alt="No image" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% endif %}
                 </div>
 
-                <!-- Cart Item 2 -->
-                <div class="cart-item">
-                    <div class="item-image"></div>
-                    <div class="item-details">
-                        <h5>Performance Jersey</h5>
-                        <p>Moisture-wicking basketball jersey</p>
-                        <p><span class="item-size">Size: L</span></p>
-                    </div>
-                    <div class="item-price">$49.99</div>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn">-</button>
-                        <span class="quantity-display">2</span>
-                        <button class="quantity-btn">+</button>
-                    </div>
-                    <button class="remove-btn">Remove</button>
+                <div class="item-details">
+                    <h5>{{ item.product.name }}</h5>
+                    <p>{{ item.product.description }}</p>
+                    <p><span class="item-size">Size: {{ item.size }}</span></p>
                 </div>
 
-                <!-- Cart Item 3 -->
-                <div class="cart-item">
-                    <div class="item-image"></div>
-                    <div class="item-details">
-                        <h5>Elite Basketball</h5>
-                        <p>Official size and weight basketball</p>
-                        <p><span class="item-size">Official Size</span></p>
-                    </div>
-                    <div class="item-price">$39.99</div>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn">-</button>
-                        <span class="quantity-display">1</span>
-                        <button class="quantity-btn">+</button>
-                    </div>
-                    <button class="remove-btn">Remove</button>
+                <div class="item-price">${{ item.product.price }}</div>
+
+                <div class="quantity-controls">
+                    <form method="post" action="{% url 'accounts:update_quantity' item.id %}" style="display: flex; align-items: center; gap: 8px;">
+                        {% csrf_token %}
+                        <button name="action" value="decrease" class="quantity-btn">-</button>
+                        <span class="quantity-display">{{ item.quantity }}</span>
+                        <button name="action" value="increase" class="quantity-btn">+</button>
+                    </form>
                 </div>
+
+                <form method="post" action="{% url 'accounts:remove_from_cart' item.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="remove-btn">Remove</button>
+                </form>
+            </div>
+            {% empty %}
+            <p>No items in cart.</p>
+            {% endfor %}
 
             <!-- Continue Shopping -->
             <div class="continue-shopping">
@@ -81,45 +66,37 @@
             </div>
 
             <div class="summary-item">
-                <span class="summary-label">Subtotal (4 items)</span>
-                <span class="summary-value">$269.97</span>
+                <span class="summary-label">Subtotal ({{ cart_items|length }} item{{ cart_items|length|pluralize }})</span>
+                <span class="summary-value">${{ subtotal }}</span>
             </div>
 
             <div class="summary-item">
                 <span class="summary-label">Shipping</span>
-                <span class="summary-value">$9.99</span>
+                <span class="summary-value">${{ shipping }}</span>
             </div>
 
             <div class="summary-item">
                 <span class="summary-label">Tax</span>
-                <span class="summary-value">$21.60</span>
+                <span class="summary-value">${{ tax }}</span>
             </div>
 
             <div class="summary-item">
                 <span class="summary-label">Total</span>
-                <span class="summary-value total-amount">$286.56</span>
+                <span class="summary-value total-amount">${{ total }}</span>
             </div>
 
-            <button class="checkout-btn">
-                <i class="fas fa-lock me-2"></i>Secure Checkout
-            </button>
+            <form method="POST" action="{% url 'accounts:checkout' %}">
+                {% csrf_token %}
+                <button type="submit" class="checkout-btn">
+                    <i class="fas fa-lock me-2"></i>Secure Checkout
+                </button>
+            </form>
 
             <div class="text-center mt-3">
                 <small class="text-muted">
                     <i class="fas fa-shield-alt me-1"></i>
                     Secure SSL encryption
                 </small>
-            </div>
-
-            <!-- Payment Methods -->
-            <div class="mt-4 text-center">
-                <p class="text-muted mb-2">We accept:</p>
-                <div style="display: flex; justify-content: center; gap: 10px; font-size: 24px; color: var(--secondary-gray);">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fab fa-cc-amex"></i>
-                    <i class="fab fa-cc-paypal"></i>
-                </div>
             </div>
         </div>
     </div>
