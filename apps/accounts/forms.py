@@ -16,7 +16,6 @@ class RegisterForm(forms.ModelForm):
         if cleaned_data.get('password') != cleaned_data.get('confirm_password'):
             self.add_error('confirm_password', "Passwords do not match.")
 
-
 class CustomLoginForm(AuthenticationForm):
     username = forms.CharField(label='Email or Username')
     password = forms.CharField(widget=forms.PasswordInput)
