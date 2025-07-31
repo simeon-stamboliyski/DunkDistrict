@@ -28,19 +28,3 @@ Key Features:
 
 	•	Scalable Architecture:
         With a modular Django app structure separating accounts, products, cart, and orders, DunkDistrict is designed for maintainability and future expansion, including integrations with payment gateways, inventory management, and analytics.
-
-⸻
-
-Technical Highlights:
-	•	Custom user model extending Django’s AbstractBaseUser and PermissionsMixin with email login.
-	•	One-to-one relationship between user profiles and shopping carts.
-	•	Models for CartItem and OrderItem capturing product details, quantities, and prices.
-	•	Efficient calculation of totals (subtotal, tax, shipping, final total) in views before order
-    creation.
-	•	Use of Django Class-Based Views and function-based views where appropriate for clean logic separation.
-	•	Template inheritance with reusable base templates and static assets management.
-	•	Form handling for quantity updates and item removal with CSRF protection.
-	•	Redirects and messaging for user-friendly navigation and feedback.
-	•	Decimal fields with appropriate precision for monetary values.
-	•	Order status tracking with user-friendly status choices.
-	•	Use of Django’s ORM for querying related objects with related_name and select_related optimization.
