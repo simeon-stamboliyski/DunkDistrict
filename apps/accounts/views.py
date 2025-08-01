@@ -13,20 +13,30 @@ import uuid
 from decimal import Decimal
 
 from .forms import RegisterForm, CustomLoginForm
-from .models import Cart, CartItem, Order, OrderItem
+from .models import Cart, CartItem, Order, OrderItem, Profile, AppUser
 from apps.products.models import Product
 
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
+            user = AppUser(email=form.cleaned_data['email'])
             user.set_password(form.cleaned_data['password'])
             user.save()
-            login(request, user)
+
+            Profile.objects.create(
+                user=user,
+                first_name=form.cleaned_data.get('first_name'),
+                last_name=form.cleaned_data.get('last_name'),
+                date_of_birth=form.cleaned_data.get('date_of_birth'),
+            )
+
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
             return redirect('common:home')
     else:
         form = RegisterForm()
+
     return render(request, 'register.html', {'form': form})
 
 def login_view(request):
