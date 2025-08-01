@@ -24,7 +24,7 @@ def register_view(request):
             user.set_password(form.cleaned_data['password'])
             user.save()
             login(request, user)
-            return redirect('/')
+            return redirect('common:home')
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
