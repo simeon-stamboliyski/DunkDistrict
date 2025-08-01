@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_protect
 import uuid
 from decimal import Decimal
 
@@ -220,3 +221,14 @@ def checkout(request):
     cart.items.all().delete()
 
     return redirect('common:home')
+
+@login_required
+@csrf_protect
+def cancel_order(request, order_id):
+    if request.method == "POST":
+        order = get_object_or_404(Order, id=order_id, profile=request.user.profile)
+        if order.status != "cancelled":
+            order.status = "cancelled"
+            order.save()
+        return redirect("accounts:profile")
+    return redirect("accounts:profile")

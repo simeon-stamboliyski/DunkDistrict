@@ -134,14 +134,23 @@
                 </style>
                 <div class="orders-history" id="orders-history">
                     {% for order in orders %}
-                        <div class="order-item">
+                        <div class="order-item" style="display: flex; justify-content: space-between; align-items: center;">
                             <div class="order-info">
                                 <h6>Order #{{ order.name }}</h6>
                                 <div class="order-date">{{ order.created_at|date:"F j, Y" }}</div>
                             </div>
-                            <div class="order-right">
+                            <div class="order-right" style="display: flex; align-items: center; gap: 15px;">
                                 <div class="order-total">${{ order.total_cost }}</div>
                                 <span class="order-status status-{{ order.status }}">{{ order.status|capfirst }}</span>
+
+                                {% if order.status != 'cancelled' %}
+                                    <button 
+                                        class="btn btn-danger cancel-order-btn"
+                                        data-order-id="{{ order.id }}"
+                                        data-order-name="Order #{{ order.name }}">
+                                        Cancel
+                                    </button>
+                                {% endif %}
                             </div>
                         </div>
                     {% empty %}
@@ -159,13 +168,124 @@
 
     </div>
 
+    <!-- Cancel Order Confirmation Modal -->
+    <div id="cancelOrderModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h4>Cancel Order</h4>
+            <p>Are you sure you want to cancel <strong id="modalOrderName"></strong>?</p>
+            <form id="cancelOrderForm" method="post" action="">
+                {% csrf_token %}
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-danger">Yes, Cancel Order</button>
+                    <button type="button" class="btn btn-secondary modal-cancel-btn">No, Keep Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <style>
     .hidden {
-    display: none !important;
+        display: none !important;
+    }
+
+    #cancelOrderModal {
+        position: fixed !important; 
+        top: 0 !important; left: 0 !important;
+        width: 100vw !important; 
+        height: 100vh !important; 
+        background: rgba(0, 0, 0, 0.5) !important; 
+        z-index: 1000 !important;
+
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    #cancelOrderModal .modal-content {
+        background: white;
+        padding: 20px 30px;
+        border-radius: 8px;
+        max-width: 400px; 
+        width: 90%; 
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 10px; right: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-danger {
+        background: #dc3545;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .modal-buttons {
+        display: flex !important;
+        gap: 10px !important;     
+        margin-top: 20px !important;
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        flex-wrap: wrap !important;
+    }
+
+    .modal-buttons button {
+        flex: 0 0 auto !important;
+        width: auto !important;
+        display: inline-block !important;
+        max-width: none !important;
     }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById("cancelOrderModal");
+    const modalOrderName = document.getElementById("modalOrderName");
+    const cancelOrderForm = document.getElementById("cancelOrderForm");
+    const modalClose = modal.querySelector(".modal-close");
+    const modalCancelBtn = modal.querySelector(".modal-cancel-btn");
+
+    document.querySelectorAll(".cancel-order-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            const orderId = this.dataset.orderId;
+            const orderName = this.dataset.orderName;
+
+            modalOrderName.textContent = orderName;
+            cancelOrderForm.action = `/accounts/cancel-order/${orderId}/`;
+
+            modal.style.display = "flex";
+        });
+    });
+
+    modalCancelBtn.addEventListener("click", (e) => {
+        e.preventDefault(); 
+        modal.style.display = "none";
+    });
+    window.addEventListener("click", e => {
+        if (e.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+});
+</script>
 
 <script>
 document.getElementById('load-all-orders-btn')?.addEventListener('click', function() {

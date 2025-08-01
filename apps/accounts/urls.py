@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import register_view, login_view, ProfileView, cart_view, load_all_orders, update_profile, update_address, update_quantity, remove_from_cart, add_to_cart, checkout
+from .views import register_view, login_view, ProfileView, cart_view, load_all_orders, update_profile, update_address, update_quantity, remove_from_cart, add_to_cart, checkout, cancel_order
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
@@ -15,4 +15,5 @@ urlpatterns = [
     path('remove_from_cart/<int:item_id>/', remove_from_cart, name="remove_from_cart"),
     path('add_to_cart/', add_to_cart, name="add_to_cart"),
     path('checkout/', checkout, name="checkout"),
+    path("cancel-order/<int:order_id>/", cancel_order, name="cancel_order"),
 ]
